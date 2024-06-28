@@ -1,4 +1,4 @@
-const DEFAULT_RES = 15;
+const DEFAULT_RES = 20;
 let res = DEFAULT_RES;
 let FontSize;
 
