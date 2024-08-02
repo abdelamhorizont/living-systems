@@ -1,5 +1,6 @@
 const DEFAULT_RES = 20;
 let res = DEFAULT_RES;
+let framerate = 3;
 let FontSize;
 
 let len;
@@ -10,6 +11,33 @@ let aliveColor;
 let gridColor;
 
 let img = [];
+let imgSrc = [
+  'assets/virus.png',
+  'assets/fire.png',
+  'assets/earth.png',
+  'assets/frog.png',
+  'assets/car.png',
+  'assets/cursor.png',
+  'assets/drop.png',
+  'assets/error.png',
+  'assets/flower.png',
+  'assets/ant.png',
+  'assets/mushroom.png',
+  'assets/planet.png',
+  'assets/book.png',
+  'assets/tornado.png',
+  'assets/sun.png',
+  'assets/tree.png',
+  'assets/cloud.png',
+  'assets/butterfly.png',
+  'assets/house.png',
+  'assets/walle.png',
+  'assets/law.png',
+  'assets/crown.png',
+  'assets/euro.png',
+  'assets/human.png',
+];
+let activeImgIndex;
 let activeImg;
 let imgIndex;
 
@@ -21,36 +49,93 @@ let redrawGrid = true;
 let showGrid = false;
 let showHelp = false;
 
+let instructions = [
+  "wer stört Ökosysteme?",
+  "welche politischen Systeme sind stabil?",
+  "wann versagen Finanzsysteme?",
+  "Wo funktionieren Wirtschaftssysteme?",
+  "Was soll dieses Verkehrssystem?",
+  "Wo liegt das Ökosystem?",
+  "Was fehlt im Bildungssystem?",
+  "Wer repariert das Betriebssystem?",
+  "Was machst du im Sozialsystem?",
+  "Für wen ist das Wirtschaftssystem?",
+  "welche politischen Systeme sind stabil?",
+  "Wie funktionieren Wirtschaftssysteme?",
+  "Was versprechen politische Systeme?",
+  "wer stört das Sozialsystem?",
+  "wann versagen Finanzsysteme?",
+  "Wer gehört zum Gesellschaftssystem?",
+  "wo versagen Finanzsysteme?",
+  "Was erzählt das System?",
+]
+
+let instCount;
+let timer = 0;
+let p;
+
+let button;
+let playButton;
+let infoVisible = false;
+let infoContainer;
+let reload
+
+let slider;
+let handCursor;
+
 function preload() {
   Cascadia = loadFont("assets/CascadiaCode.ttf");
   CascadiaItalic = loadFont("assets/CascadiaCodeItalic.ttf");
-  img[0] = loadImage('assets/virus.png');
-  img[1] = loadImage('assets/fire.png');
-  img[2] = loadImage('assets/earth.png');
-  img[3] = loadImage('assets/frog.png');
-  img[4] = loadImage('assets/boat.png');
-  img[5] = loadImage('assets/cursor.png');
-  img[6] = loadImage('assets/drop.png');
-  img[7] = loadImage('assets/error.png');
-  img[8] = loadImage('assets/euro.png');
-  img[9] = loadImage('assets/flower.png');
-  img[10] = loadImage('assets/fly.png');
-  img[11] = loadImage('assets/human.png');
-  img[12] = loadImage('assets/mushroom.png');
-  img[13] = loadImage('assets/planet.png');
-  img[14] = loadImage('assets/right.png');
-  img[15] = loadImage('assets/tornado.png');
-  img[16] = loadImage('assets/sun.png');
-  img[17] = loadImage('assets/tree.png');
-  img[18] = loadImage('assets/cloud.png');
 
+  // img.apply(null, Array(10)).map((i) => loadImage(imgSrc[i])
+  for (let i = 0; i < imgSrc.length; i++) {
+    img[i] = loadImage(imgSrc[i]);    
+  }
 
 }
 
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  //createCanvas(400, 400);
-  frameRate(7);
+  p = select('.instructions')
+  p.html(instructions[activeImgIndex])
+
+  //info-button
+  button = select('.info-button');
+  button.mouseClicked(() => { 
+    infoVisible = !infoVisible;
+    redrawGrid = !redrawGrid   
+  });
+  
+  reload = select(".reload-button")
+  reload.mouseClicked(() => { 
+    resetSketch();
+  });
+
+  infoContainer = select('.info-container')
+  
+  playButton = select('.play-button')
+  playButton.mouseClicked(() => { 
+    redrawGrid = !redrawGrid  
+    redrawGrid ? playButton.html('⏸') : playButton.html('▶')
+  });
+
+  slider = select('#zoom') // min, max, 
+  framerateSlider = select('#framerate') // min, max, 
+  frameRate(framerateSlider.value());
+
+  slider.changed(() => {
+    res = slider.value();
+    removeElements();
+    resetSketch()
+  });
+
+  resetSketch();
+
+}
+
+function resetSketch() {
+  res = slider.value();
 
   let temp = height > width ? width : height;
   len = temp / res;
@@ -58,28 +143,28 @@ function setup() {
   rows = ceil(height / len);
   cols = ceil(width / len);
 
-  deadColor = 255;
-  aliveColor = 0;
-  activeImg = img[0];
-  
-  gridColor = color(220, 220, 80);
+  deadColor = color(255);
+  aliveColor = color(0,0);
+  activeImg = select('.active-img');
 
+  gridColor = color(0, 0, 255);
   FontSize = temp / DEFAULT_RES;
-  //index = int(random(0, 2));
-  // imgIndex = 0;
 
   grid = new Grid(rows, cols, len, [deadColor, aliveColor], img);
   grid.genorate(prob);
-  
+  activeImgIndex = int(random(img.length));
+
 }
 
 function draw() {
   background(deadColor);
+  // background(0,0,255);
+  frameRate(framerateSlider.value());
 
   if (showGrid) {
     push();
     stroke(gridColor);
-    strokeWeight(5);
+    strokeWeight(1);
     for (let x = 0; x < cols; x++) {
       line(x * len, 0, x * len, height);
     }
@@ -92,7 +177,7 @@ function draw() {
   grid.show();
 
   if (redrawGrid) {
-    grid.update();
+    grid.update(activeImgIndex);
   } else {
     push();
     textFont(CascadiaItalic);
@@ -117,12 +202,51 @@ function draw() {
     }
 
     if (mouseButton === LEFT) {
-      grid.grid[y][x] = 1;
+      let clicked = true;
+
+      if(grid.grid[y][x] == 1){
+        grid.grid[y][x] = 0; //remove clicked img
+        activeImgIndex = grid.imgGrid[y][x] //take on clicked img
+      } else {
+        grid.grid[y][x] = 1; // place active Img
+        grid.imgGrid[y][x] = activeImgIndex; //display active img
+        grid.update(activeImgIndex, clicked);
+      }
+
     } else if (mouseButton === RIGHT) {
       grid.grid[y][x] = 0;
     }
   }
+
+  //info
+  if (infoVisible) {
+    // showInfo();
+    infoContainer.style('transform', 'scale(1)')
+    button.html('&times;')
+    // redrawGrid = false
+  } else {
+    infoContainer.style('transform', 'scale(0)')
+    button.html('i')
+    // redrawGrid = true
+
+  }
+
+
+  p.html(instructions[activeImgIndex])
+
+  //activeImgIndex display
+  image(img[activeImgIndex], mouseX - 50, mouseY - 50, img[activeImgIndex].width/3, img[activeImgIndex].height/3)
+  activeImg.attribute('src', imgSrc[activeImgIndex])
+
+  // if(activeImgIndex == 14){
+  //   deadColor = color(0);
+  // } else if(activeImgIndex == 6){
+  //   deadColor = color(0, 0, 255);
+  // } else{
+  //   deadColor = color(255);
+  // }
 }
+
 
 function showInfo() {
   push();
@@ -130,36 +254,36 @@ function showInfo() {
   let x = width / 2;
   let y = height / 2 - fontSize * 8;
 
-  rectMode(CENTER);
-  stroke(255);
-  strokeWeight(5);
-  fill(255, 200);
-  rect(width / 2, height / 2, fontSize * 25, fontSize * 18);
+  // rectMode(CENTER);
+  // stroke(255);
+  // strokeWeight(5);
+  fill(0, 0, 255);
+  rect(10, 10, fontSize * 25, fontSize * 18);
 
-  strokeWeight(3);
-  textFont(Cascadia);
+  // strokeWeight(3);
+  // textFont(Cascadia);
   textSize(fontSize);
-  textAlign(CENTER);
-  fill(0);
+  // textAlign(CENTER);
+  fill(255);
 
   textStyle(BOLD);
-  text(`Conway's Game of Life by S.Y. Kim.`, x, y + fontSize);
+  text(`Conway's Game of Life by S.Y. Kim.`, 15, 80);
 
-  textStyle(NORMAL);
-  text(`Press 'R' to reset grid.`, x, y + fontSize * 3);
-  text(`Press 'T' to reset grid with no cells.`, x, y + fontSize * 4);
-  text(`Press 'N' to advance a single step.`, x, y + fontSize * 5);
-  text(`Press 'G' to toggle grid lines.`, x, y + fontSize * 6);
+  // textStyle(NORMAL);
+  // text(`Press 'R' to reset grid.`, x, y + fontSize * 3);
+  // text(`Press 'T' to reset grid with no cells.`, x, y + fontSize * 4);
+  // text(`Press 'N' to advance a single step.`, x, y + fontSize * 5);
+  // text(`Press 'G' to toggle grid lines.`, x, y + fontSize * 6);
 
-  text(`Press '[[]' to decrease cell resolution.`, x, y + fontSize * 8);
-  text(`Press ']' to increase cell resolution.`, x, y + fontSize * 9);
-  text(`Press '\\' to reset cell resolution.`, x, y + fontSize * 10);
+  // text(`Press '[[]' to decrease cell resolution.`, x, y + fontSize * 8);
+  // text(`Press ']' to increase cell resolution.`, x, y + fontSize * 9);
+  // text(`Press '\\' to reset cell resolution.`, x, y + fontSize * 10);
 
-  text(`Press Mouse Left to set cell to alive.`, x, y + fontSize * 12);
-  text(`Press Mouse Right to set cell to dead.`, x, y + fontSize * 13);
-  text(`Press Mouse Center or 'P' to pause/play.`, x, y + fontSize * 14);
+  // text(`Press Mouse Left to set cell to alive.`, x, y + fontSize * 12);
+  // text(`Press Mouse Right to set cell to dead.`, x, y + fontSize * 13);
+  // text(`Press Mouse Center or 'P' to pause/play.`, x, y + fontSize * 14);
 
-  text(`Hold 'H' to show help message box.`, x, y + fontSize * 16);
+  // text(`Hold 'H' to show help message box.`, x, y + fontSize * 16);
   pop();
 }
 
@@ -177,7 +301,7 @@ function keyPressed() {
     prob = 0;
     setup();
   } else if (keyCode === "N".charCodeAt(0)) {
-    grid.update();
+    grid.update(activeImgIndex);
   } else if (keyCode === "G".charCodeAt(0)) {
     showGrid = !showGrid;
   } else if (keyCode === "S".charCodeAt(0)) {
