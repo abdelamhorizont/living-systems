@@ -92,6 +92,7 @@ let handCursor;
 function preload() {
   Cascadia = loadFont("assets/CascadiaCode.ttf");
   CascadiaItalic = loadFont("assets/CascadiaCodeItalic.ttf");
+  handCursor = loadImage("assets/hand.png");  
 
   // img.apply(null, Array(10)).map((i) => loadImage(imgSrc[i])
   for (let i = 0; i < imgSrc.length; i++) {
@@ -241,7 +242,7 @@ function draw() {
   p.html(instructions[activeImgIndex])
 
   //activeImgIndex display
-  image(img[activeImgIndex], mouseX - 50, mouseY - 50, img[activeImgIndex].width/3, img[activeImgIndex].height/3)
+  image(handCursor, mouseX - 50, mouseY - 50, handCursor.width, handCursor.height)
   activeImg.attribute('src', imgSrc[activeImgIndex])
 
   // if(activeImgIndex == 14){
