@@ -332,3 +332,7 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   setup();
 }
+
+function touchStarted() {
+  // Code to run.
+}
