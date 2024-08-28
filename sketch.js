@@ -347,8 +347,11 @@ function touchEnded() {
   // console.log(touching)
 }
 
-function mouseClicked() {
-  // Code to run.
-  touching = true
+// function mouseClicked() {
+//   touching = true
 
-}
+// }
+
+// function mouseReleased() {
+//   touching = false
+// }
