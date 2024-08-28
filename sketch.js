@@ -338,11 +338,17 @@ function windowResized() {
 function touchStarted() {
   // Code to run.
   touching = true
-  console.log(touching, mouseX)
+  console.log(mouseIsPressed)
 }
 
 function touchEnded() {
   // Code to run.
   touching = false
   // console.log(touching)
+}
+
+function mouseClicked() {
+  // Code to run.
+  touching = true
+
 }
