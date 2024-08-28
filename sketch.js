@@ -50,30 +50,30 @@ let showGrid = false;
 let showHelp = false;
 
 let instructions = [
-  "wer stört Ökosysteme?",
-  "welche politischen Systeme sind stabil?",
-  "wann versagen Finanzsysteme?",
-  "Wo funktionieren Wirtschaftssysteme?",
+  "Wer stört das Ökosystem?",
+  "Welche politischen Systeme sind stabil?",
+  "Wann versagen Finanzsysteme?",
+  "Wie funktionieren Wirtschaftssysteme?",
   "Was soll dieses Verkehrssystem?",
-  "Wo liegt das Ökosystem?",
+  "Wo interagierst du mit dem Ökosystem?",
   "Was fehlt im Bildungssystem?",
-  "Wer repariert das Betriebssystem?",
-  "Was machst du im Sozialsystem?",
+  "Wen stört das Betriebssystem?",
+  "Für wen ist das Sozialsystem?",
   "Für wen ist das Wirtschaftssystem?",
-  "welche politischen Systeme sind instabil?",
+  "Welche politischen Systeme sind instabil?",
   "Wie funktionieren Wirtschaftssysteme?",
   "Was versprechen politische Systeme?",
-  "wer stört das Sozialsystem?",
-  "wann versagen Finanzsysteme?",
+  "Wer stört das Sozialsystem?",
+  "Wann versagen Finanzsysteme?",
   "Wer gehört zum Gesellschaftssystem?",
-  "wo versagen Finanzsysteme?",
-  "Was erzählt das System?",
-  "Was erzählt das System?",
-  "Was erzählt das System?",
-  "Was erzählt das System?",
-  "Was erzählt das System?",
-  "Was erzählt das System?",
-  "Was erzählt das System?",
+  "Wo versagen Finanzsysteme?",
+  "Wie verändert sich das System?",
+  "Wer verdient Wohnraum?",
+  "Wohin entwickelt sich das Betriebssystem?",
+  "Was sind die Grenzen des Rechtssystems?",
+  "Wer entscheidet über das politische System?",
+  "Was hält das Sonnensystem zusammen?",
+  "Von welchen Systemen bist du ein Teil?",
 ]
 
 let instCount;
@@ -88,6 +88,8 @@ let reload
 
 let slider;
 let handCursor;
+
+let touching = false;
 
 function preload() {
   Cascadia = loadFont("assets/CascadiaCode.ttf");
@@ -198,7 +200,7 @@ function draw() {
   }
 
   // User Interrupt.
-  if (mouseIsPressed) {
+  if (mouseIsPressed || touching) {
     let x = floor(mouseX / grid.len);
     let y = floor(mouseY / grid.len);
 
@@ -208,7 +210,7 @@ function draw() {
       return;
     }
 
-    if (mouseButton === LEFT) {
+    // if (mouseButton === LEFT) {
       let clicked = true;
 
       if(grid.grid[y][x] == 1){
@@ -220,9 +222,9 @@ function draw() {
         grid.update(activeImgIndex, clicked);
       }
 
-    } else if (mouseButton === RIGHT) {
-      grid.grid[y][x] = 0;
-    }
+    // } else if (mouseButton === RIGHT) {
+    //   grid.grid[y][x] = 0;
+    // }
   }
 
   //info
@@ -335,4 +337,12 @@ function windowResized() {
 
 function touchStarted() {
   // Code to run.
+  touching = true
+  console.log(touching, mouseX)
+}
+
+function touchEnded() {
+  // Code to run.
+  touching = false
+  // console.log(touching)
 }
