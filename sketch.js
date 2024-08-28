@@ -123,10 +123,11 @@ function setup() {
 
   infoContainer = select('.info-container')
   
-  playButton = select('.play-button')
+  playButton = select('.play-icon')
   playButton.mouseClicked(() => { 
     redrawGrid = !redrawGrid  
-    redrawGrid ? playButton.html('⏸') : playButton.html('▶')
+    redrawGrid ? playButton.attribute('src', 'assets/pause.png') : playButton.attribute('src', 'assets/play.png')
+    // redrawGrid ? playButton.html('⏸') : playButton.html('▶')
   });
 
   slider = select('#zoom') // min, max, 
