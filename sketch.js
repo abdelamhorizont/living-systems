@@ -87,6 +87,12 @@ let infoContainer;
 let reload
 
 let slider;
+let sliderValue;
+let zoominButton;
+let zoomoutButton;
+let fasterButton;
+let slowerButton;
+
 let handCursor;
 
 let touching = false;
@@ -130,8 +136,43 @@ function setup() {
     // redrawGrid ? playButton.html('⏸') : playButton.html('▶')
   });
 
-  slider = select('#zoom') // min, max, 
-  framerateSlider = select('#framerate') // min, max, 
+  slider = select('#zoom') 
+  framerateSlider = select('#framerate') 
+  zoominButton = select('#zoomin-container') 
+  zoomoutButton = select('#zoomout-container') 
+  fasterButton = select('#faster-container') 
+  slowerButton = select('#slower-container') 
+
+  zoominButton.mouseClicked(() => { 
+    let sliderValue = slider.value()
+    sliderValue--
+    slider.value(sliderValue);
+    res = slider.value();
+    removeElements();
+    resetSketch()
+  })
+
+  zoomoutButton.mouseClicked(() => { 
+    let sliderValue = slider.value()
+    sliderValue++
+    slider.value(sliderValue);
+    res = slider.value();
+    removeElements();
+    resetSketch()
+  })
+  
+  fasterButton.mouseClicked(() => { 
+    let speedValue = framerateSlider.value()
+    speedValue++
+    framerateSlider.value(speedValue);
+  })
+
+  slowerButton.mouseClicked(() => { 
+    let speedValue = framerateSlider.value()
+    speedValue--
+    framerateSlider.value(speedValue);
+  })
+  
   frameRate(framerateSlider.value());
 
   slider.changed(() => {
@@ -245,7 +286,7 @@ function draw() {
   p.html(instructions[activeImgIndex])
 
   //activeImgIndex display
-  image(handCursor, mouseX - 50, mouseY - 50, handCursor.width, handCursor.height)
+  image(handCursor, mouseX, mouseY, handCursor.width*2, handCursor.height*2)
   activeImg.attribute('src', imgSrc[activeImgIndex])
 
   // if(activeImgIndex == 14){
