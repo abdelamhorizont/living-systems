@@ -61,7 +61,7 @@ let instructions = [
   "Für wen ist das Sozialsystem?",
   "Für wen ist das Wirtschaftssystem?",
   "Welche politischen Systeme sind instabil?",
-  "Wie funktionieren Wirtschaftssysteme?",
+  "Wer entscheidet über das Wirtschaftssystem?",
   "Was versprechen politische Systeme?",
   "Wer stört das Sozialsystem?",
   "Wann versagen Finanzsysteme?",
