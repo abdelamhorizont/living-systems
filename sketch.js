@@ -196,7 +196,7 @@ function draw() {
     stroke(255);
     strokeWeight(5);
     fill(0, 255, 0);
-    text("PAUSED", 10, FontSize);
+    // text("PAUSED", 10, FontSize);
     pop();
   }
 

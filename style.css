@@ -84,7 +84,7 @@ div#zoomout-container{
   top: 15px;
   right: 15px; */
 
-  padding: 10px 25px;
+  padding: 10px 1rem;
   font-size: 1.75rem;
   color: white;
   background-color: blue;
@@ -115,7 +115,7 @@ div#zoomout-container{
   max-height: 63vh;
   overflow: scroll;
 
-  top: 8vh;
+  top: 12vh;
   left: 5vw;
   padding: 1rem;
   border-radius: 3rem;
@@ -206,20 +206,6 @@ button{
   padding: 1rem;
 }
 
-input[type=range][orient=vertical] {
-  -webkit-appearance: none;
-  /* color: red;
-  background: red; */
-
-  writing-mode: vertical-lr;
-  direction: rtl;
-  appearance: slider-vertical;
-  /* width: 16px;
-  height: 30vh; */
-
-  vertical-align: bottom;
-}
-
 .slider {
   height: 100%;
   /* writing-mode: vertical-lr; 
@@ -234,36 +220,18 @@ input[type=range][orient=vertical] {
   -webkit-transition: .2s; */
 }
 
-.slider::-webkit-slider-thumb {
+input[type=range][orient=vertical] {
   -webkit-appearance: none;
-  appearance: none;
-  width: 2rem;
-  color: blue;
-
-  /* height: 500px;
-  border-radius: 50%;   */
-  /* color: red; */
-  /* cursor: pointer; */
-}
-
-.slider::-moz-range-thumb {
-  /* width: 50px;
-  height: 50px; */
-  border-radius: 50%;
-  width: 2rem;
-  color: blue;
-
   /* color: red;
   background: red; */
 
-  /* cursor: pointer; */
-}
+  writing-mode: vertical-lr;
+  direction: rtl;
+  appearance: slider-vertical;
+  /* width: 16px;
+  height: 30vh; */
 
-input[type=range] {
-  -webkit-appearance: none; 
-  appearance:inherit;
-  opacity: 1;
-
+  vertical-align: bottom;
 }
 
 input[type=range]::-webkit-slider-runnable-track {
@@ -272,19 +240,12 @@ input[type=range]::-webkit-slider-runnable-track {
   /* ...my custom edits...*/
 }
 
-
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
+  appearance: none;
+
   color: blue;
   opacity: 1;
-  width: 2rem;
-  /* width: 100px;
-  height: 100px; */
-
-}
-
-input[type=range]:hover::-webkit-slider-thumb {
-  color: yellow;
-  opacity: 1;
-
+  width: 12rem;
+  height: 12rem;
 }
