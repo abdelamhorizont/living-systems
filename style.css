@@ -163,15 +163,8 @@ h1 {
 button {
   font-family: Arial, Helvetica, sans-serif;
 }
-
 .play-button {
-  /* position: absolute;
-  left: 2vw;
-  bottom: 5vh; */
-
-  /* padding: 10px 12px; */
   padding: 1rem;
-
   font-size: 7rem;
   color: blue;
   background-color: yellow;
@@ -222,20 +215,6 @@ button {
 
 .slider {
   height: 100%;
-  /* writing-mode: vertical-lr; 
- 
-  -webkit-appearance: none;
-  width: 100%;
-  height: 30vh;
-  border-radius: 10px;  
-  color: red;
-  background: red;
-
-  -webkit-transition: .2s; */
-}
-
-#zoom-slider,
-#speed-slider {
   writing-mode: vertical-lr;
   direction: rtl;
 }

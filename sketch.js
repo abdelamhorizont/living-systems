@@ -100,14 +100,15 @@ let fasterButton;
 let slowerButton;
 
 let handCursor;
+// let Cascadia;
+let CascadiaItalic;
 let speedSlider;
 
 function preload() {
-  Cascadia = loadFont("assets/CascadiaCode.ttf");
+  // Cascadia = loadFont("assets/CascadiaCode.ttf");
   CascadiaItalic = loadFont("assets/CascadiaCodeItalic.ttf");
   handCursor = loadImage("assets/hand.png");
 
-  // img.apply(null, Array(10)).map((i) => loadImage(imgSrc[i])
   for (let i = 0; i < imgSrc.length; i++) {
     img[i] = loadImage(imgSrc[i]);
   }
@@ -119,11 +120,9 @@ function setup() {
   p = select(".instructions");
   p.html(instructions[activeImgIndex]);
 
-  //info-button
   button = select(".info-button");
   button.mouseClicked(() => {
     infoVisible = !infoVisible;
-    redrawGrid = !redrawGrid;
   });
 
   reload = select(".reload-button");
@@ -133,13 +132,14 @@ function setup() {
 
   infoContainer = select(".info-container");
 
-  playButton = select(".play-icon");
+  playButton = select(".play-button");
+  playIcon = select(".play-icon");
+
   playButton.mouseClicked(() => {
     redrawGrid = !redrawGrid;
     redrawGrid
-      ? playButton.attribute("src", "assets/pause.png")
-      : playButton.attribute("src", "assets/play.png");
-    // redrawGrid ? playButton.html('⏸') : playButton.html('▶')
+      ? playIcon.attribute("src", "assets/pause.png")
+      : playIcon.attribute("src", "assets/play.png");
   });
 
   slider = select("#zoom-slider");
@@ -229,7 +229,7 @@ function draw() {
 
   grid.show();
 
-  if (redrawGrid && frameCount % speed === 0) {
+  if (redrawGrid && frameCount % speed === 0 && !infoVisible) {
     grid.update(activeImgIndex);
   } else {
     push();
@@ -245,14 +245,11 @@ function draw() {
 
   //info
   if (infoVisible) {
-    // showInfo();
     infoContainer.style("transform", "scale(1)");
     button.html("&times;");
-    // redrawGrid = false
   } else {
     infoContainer.style("transform", "scale(0)");
     button.html("i");
-    // redrawGrid = true
   }
 
   p.html(instructions[activeImgIndex]);
@@ -268,44 +265,44 @@ function draw() {
   activeImg.attribute("src", imgSrc[activeImgIndex]);
 }
 
-function showInfo() {
-  push();
-  let fontSize = FontSize / 1.5;
-  let x = width / 2;
-  let y = height / 2 - fontSize * 8;
+// function showInfo() {
+//   push();
+//   let fontSize = FontSize / 1.5;
+//   let x = width / 2;
+//   let y = height / 2 - fontSize * 8;
 
-  // rectMode(CENTER);
-  // stroke(255);
-  // strokeWeight(5);
-  fill(0, 0, 255);
-  rect(10, 10, fontSize * 25, fontSize * 18);
+//   // rectMode(CENTER);
+//   // stroke(255);
+//   // strokeWeight(5);
+//   fill(0, 0, 255);
+//   rect(10, 10, fontSize * 25, fontSize * 18);
 
-  // strokeWeight(3);
-  // textFont(Cascadia);
-  textSize(fontSize);
-  // textAlign(CENTER);
-  fill(255);
+//   // strokeWeight(3);
+//   // textFont(Cascadia);
+//   textSize(fontSize);
+//   // textAlign(CENTER);
+//   fill(255);
 
-  textStyle(BOLD);
-  text(`Conway's Game of Life by S.Y. Kim.`, 15, 80);
+//   textStyle(BOLD);
+//   text(`Conway's Game of Life by S.Y. Kim.`, 15, 80);
 
-  // textStyle(NORMAL);
-  // text(`Press 'R' to reset grid.`, x, y + fontSize * 3);
-  // text(`Press 'T' to reset grid with no cells.`, x, y + fontSize * 4);
-  // text(`Press 'N' to advance a single step.`, x, y + fontSize * 5);
-  // text(`Press 'G' to toggle grid lines.`, x, y + fontSize * 6);
+//   // textStyle(NORMAL);
+//   // text(`Press 'R' to reset grid.`, x, y + fontSize * 3);
+//   // text(`Press 'T' to reset grid with no cells.`, x, y + fontSize * 4);
+//   // text(`Press 'N' to advance a single step.`, x, y + fontSize * 5);
+//   // text(`Press 'G' to toggle grid lines.`, x, y + fontSize * 6);
 
-  // text(`Press '[[]' to decrease cell resolution.`, x, y + fontSize * 8);
-  // text(`Press ']' to increase cell resolution.`, x, y + fontSize * 9);
-  // text(`Press '\\' to reset cell resolution.`, x, y + fontSize * 10);
+//   // text(`Press '[[]' to decrease cell resolution.`, x, y + fontSize * 8);
+//   // text(`Press ']' to increase cell resolution.`, x, y + fontSize * 9);
+//   // text(`Press '\\' to reset cell resolution.`, x, y + fontSize * 10);
 
-  // text(`Press Mouse Left to set cell to alive.`, x, y + fontSize * 12);
-  // text(`Press Mouse Right to set cell to dead.`, x, y + fontSize * 13);
-  // text(`Press Mouse Center or 'P' to pause/play.`, x, y + fontSize * 14);
+//   // text(`Press Mouse Left to set cell to alive.`, x, y + fontSize * 12);
+//   // text(`Press Mouse Right to set cell to dead.`, x, y + fontSize * 13);
+//   // text(`Press Mouse Center or 'P' to pause/play.`, x, y + fontSize * 14);
 
-  // text(`Hold 'H' to show help message box.`, x, y + fontSize * 16);
-  pop();
-}
+//   // text(`Hold 'H' to show help message box.`, x, y + fontSize * 16);
+//   pop();
+// }
 
 function keyPressed() {
   if (keyCode === "R".charCodeAt(0)) {
@@ -388,6 +385,9 @@ function mouseReleased() {
 
 function mouseDragged() {
   const [x, y] = getGridFromMouse();
+  if (x === null || y === null) {
+    return;
+  }
 
   toggleCell(x, y);
 
