@@ -17,7 +17,7 @@ let aliveColor;
 let gridColor;
 
 let img = [];
-let imgSrc = [
+const imgSrc = [
   "assets/virus.png",
   "assets/fire.png",
   "assets/earth.png",
@@ -55,7 +55,7 @@ let redrawGrid = true;
 let showGrid = false;
 let showHelp = false;
 
-let instructions = [
+const instructions = [
   "Wer stört das Ökosystem?",
   "Welche politischen Systeme sind stabil?",
   "Wann versagen Finanzsysteme?",
@@ -383,7 +383,7 @@ function mouseReleased() {
   editMode = null;
 }
 
-function mouseDragged() {
+function mouseDragged(event) {
   const [x, y] = getGridFromMouse();
   if (x === null || y === null) {
     return;
