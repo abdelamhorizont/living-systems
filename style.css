@@ -234,6 +234,12 @@ button {
   -webkit-transition: .2s; */
 }
 
+#zoom-slider,
+#speed-slider {
+  writing-mode: vertical-lr;
+  direction: rtl;
+}
+
 input[type="range"][orient="vertical"] {
   -webkit-appearance: none;
   /* color: red;

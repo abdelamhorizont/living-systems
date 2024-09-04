@@ -142,7 +142,7 @@ function setup() {
     // redrawGrid ? playButton.html('⏸') : playButton.html('▶')
   });
 
-  slider = select("#zoom");
+  slider = select("#zoom-slider");
   speedSlider = select("#speed-slider");
   zoominButton = select("#zoomin-container");
   zoomoutButton = select("#zoomout-container");
