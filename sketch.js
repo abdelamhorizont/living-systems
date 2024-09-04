@@ -1,6 +1,12 @@
 const DEFAULT_RES = 20;
 let res = DEFAULT_RES;
-let framerate = 3;
+let speed = 3;
+const speedSteps = 2;
+
+// 'add' or 'remove' elements from grid when moving mouse
+// default 'null'
+let editMode = null;
+
 let FontSize;
 
 let len;
@@ -12,30 +18,30 @@ let gridColor;
 
 let img = [];
 let imgSrc = [
-  'assets/virus.png',
-  'assets/fire.png',
-  'assets/earth.png',
-  'assets/frog.png',
-  'assets/car.png',
-  'assets/cursor.png',
-  'assets/drop.png',
-  'assets/error.png',
-  'assets/flower.png',
-  'assets/ant.png',
-  'assets/mushroom.png',
-  'assets/planet.png',
-  'assets/book.png',
-  'assets/tornado.png',
-  'assets/sun.png',
-  'assets/tree.png',
-  'assets/cloud.png',
-  'assets/butterfly.png',
-  'assets/house.png',
-  'assets/walle.png',
-  'assets/law.png',
-  'assets/crown.png',
-  'assets/euro.png',
-  'assets/human.png',
+  "assets/virus.png",
+  "assets/fire.png",
+  "assets/earth.png",
+  "assets/frog.png",
+  "assets/car.png",
+  "assets/cursor.png",
+  "assets/drop.png",
+  "assets/error.png",
+  "assets/flower.png",
+  "assets/ant.png",
+  "assets/mushroom.png",
+  "assets/planet.png",
+  "assets/book.png",
+  "assets/tornado.png",
+  "assets/sun.png",
+  "assets/tree.png",
+  "assets/cloud.png",
+  "assets/butterfly.png",
+  "assets/house.png",
+  "assets/walle.png",
+  "assets/law.png",
+  "assets/crown.png",
+  "assets/euro.png",
+  "assets/human.png",
 ];
 let activeImgIndex;
 let activeImg;
@@ -74,7 +80,7 @@ let instructions = [
   "Wer entscheidet über das politische System?",
   "Was hält das Sonnensystem zusammen?",
   "Von welchen Systemen bist du ein Teil?",
-]
+];
 
 let instCount;
 let timer = 0;
@@ -84,7 +90,7 @@ let button;
 let playButton;
 let infoVisible = false;
 let infoContainer;
-let reload
+let reload;
 
 let slider;
 let sliderValue;
@@ -94,95 +100,92 @@ let fasterButton;
 let slowerButton;
 
 let handCursor;
-
-let touching = false;
+let speedSlider;
 
 function preload() {
   Cascadia = loadFont("assets/CascadiaCode.ttf");
   CascadiaItalic = loadFont("assets/CascadiaCodeItalic.ttf");
-  handCursor = loadImage("assets/hand.png");  
+  handCursor = loadImage("assets/hand.png");
 
   // img.apply(null, Array(10)).map((i) => loadImage(imgSrc[i])
   for (let i = 0; i < imgSrc.length; i++) {
-    img[i] = loadImage(imgSrc[i]);    
+    img[i] = loadImage(imgSrc[i]);
   }
-
 }
 
-
 function setup() {
+  frameRate(60);
   createCanvas(windowWidth, windowHeight);
-  p = select('.instructions')
-  p.html(instructions[activeImgIndex])
+  p = select(".instructions");
+  p.html(instructions[activeImgIndex]);
 
   //info-button
-  button = select('.info-button');
-  button.mouseClicked(() => { 
+  button = select(".info-button");
+  button.mouseClicked(() => {
     infoVisible = !infoVisible;
-    redrawGrid = !redrawGrid   
+    redrawGrid = !redrawGrid;
   });
-  
-  reload = select(".reload-button")
-  reload.mouseClicked(() => { 
+
+  reload = select(".reload-button");
+  reload.mouseClicked(() => {
     resetSketch();
   });
 
-  infoContainer = select('.info-container')
-  
-  playButton = select('.play-icon')
-  playButton.mouseClicked(() => { 
-    redrawGrid = !redrawGrid  
-    redrawGrid ? playButton.attribute('src', 'assets/pause.png') : playButton.attribute('src', 'assets/play.png')
+  infoContainer = select(".info-container");
+
+  playButton = select(".play-icon");
+  playButton.mouseClicked(() => {
+    redrawGrid = !redrawGrid;
+    redrawGrid
+      ? playButton.attribute("src", "assets/pause.png")
+      : playButton.attribute("src", "assets/play.png");
     // redrawGrid ? playButton.html('⏸') : playButton.html('▶')
   });
 
-  slider = select('#zoom') 
-  framerateSlider = select('#framerate') 
-  zoominButton = select('#zoomin-container') 
-  zoomoutButton = select('#zoomout-container') 
-  fasterButton = select('#faster-container') 
-  slowerButton = select('#slower-container') 
+  slider = select("#zoom");
+  speedSlider = select("#speed-slider");
+  zoominButton = select("#zoomin-container");
+  zoomoutButton = select("#zoomout-container");
+  fasterButton = select("#faster-container");
+  slowerButton = select("#slower-container");
 
-  zoominButton.mouseClicked(() => { 
-    let sliderValue = slider.value()
-    sliderValue--
+  zoominButton.mouseClicked(() => {
+    let sliderValue = slider.value();
+    sliderValue--;
     slider.value(sliderValue);
     res = slider.value();
     removeElements();
-    resetSketch()
-  })
+    resetSketch();
+  });
 
-  zoomoutButton.mouseClicked(() => { 
-    let sliderValue = slider.value()
-    sliderValue++
+  zoomoutButton.mouseClicked(() => {
+    let sliderValue = slider.value();
+    sliderValue++;
     slider.value(sliderValue);
     res = slider.value();
     removeElements();
-    resetSketch()
-  })
-  
-  fasterButton.mouseClicked(() => { 
-    let speedValue = framerateSlider.value()
-    speedValue++
-    framerateSlider.value(speedValue);
-  })
+    resetSketch();
+  });
 
-  slowerButton.mouseClicked(() => { 
-    let speedValue = framerateSlider.value()
-    speedValue--
-    framerateSlider.value(speedValue);
-  })
-  
-  frameRate(framerateSlider.value());
+  fasterButton.mouseClicked(() => {
+    let speedValue = speedSlider.value();
+    speedSlider.value(speedValue - speedSteps);
+  });
+
+  slowerButton.mouseClicked(() => {
+    let speedValue = speedSlider.value();
+    speedSlider.value(speedValue + speedSteps);
+  });
+
+  speed = speedSlider.value();
 
   slider.changed(() => {
     res = slider.value();
     removeElements();
-    resetSketch()
+    resetSketch();
   });
 
   resetSketch();
-
 }
 
 function resetSketch() {
@@ -195,8 +198,8 @@ function resetSketch() {
   cols = ceil(width / len);
 
   deadColor = color(255);
-  aliveColor = color(0,0);
-  activeImg = select('.active-img');
+  aliveColor = color(0, 0);
+  activeImg = select(".active-img");
 
   gridColor = color(0, 0, 255);
   FontSize = temp / DEFAULT_RES;
@@ -204,13 +207,12 @@ function resetSketch() {
   grid = new Grid(rows, cols, len, [deadColor, aliveColor], img);
   grid.genorate(prob);
   activeImgIndex = int(random(img.length));
-
 }
 
 function draw() {
   background(deadColor);
   // background(0,0,255);
-  frameRate(framerateSlider.value());
+  speed = speedSlider.value();
 
   if (showGrid) {
     push();
@@ -227,7 +229,7 @@ function draw() {
 
   grid.show();
 
-  if (redrawGrid) {
+  if (redrawGrid && frameCount % speed === 0) {
     grid.update(activeImgIndex);
   } else {
     push();
@@ -241,63 +243,30 @@ function draw() {
     pop();
   }
 
-  // User Interrupt.
-  if (mouseIsPressed || touching) {
-    let x = floor(mouseX / grid.len);
-    let y = floor(mouseY / grid.len);
-
-    let xBound = 0 <= x && x < grid.cols;
-    let yBound = 0 <= y && y < grid.rows;
-    if (!xBound || !yBound) {
-      return;
-    }
-
-    // if (mouseButton === LEFT) {
-      let clicked = true;
-
-      if(grid.grid[y][x] == 1){
-        grid.grid[y][x] = 0; //remove clicked img
-        activeImgIndex = grid.imgGrid[y][x] //take on clicked img
-      } else {
-        grid.grid[y][x] = 1; // place active Img
-        grid.imgGrid[y][x] = activeImgIndex; //display active img
-        grid.update(activeImgIndex, clicked);
-      }
-
-    // } else if (mouseButton === RIGHT) {
-    //   grid.grid[y][x] = 0;
-    // }
-  }
-
   //info
   if (infoVisible) {
     // showInfo();
-    infoContainer.style('transform', 'scale(1)')
-    button.html('&times;')
+    infoContainer.style("transform", "scale(1)");
+    button.html("&times;");
     // redrawGrid = false
   } else {
-    infoContainer.style('transform', 'scale(0)')
-    button.html('i')
+    infoContainer.style("transform", "scale(0)");
+    button.html("i");
     // redrawGrid = true
-
   }
 
-
-  p.html(instructions[activeImgIndex])
+  p.html(instructions[activeImgIndex]);
 
   //activeImgIndex display
-  image(handCursor, mouseX, mouseY, handCursor.width*2, handCursor.height*2)
-  activeImg.attribute('src', imgSrc[activeImgIndex])
-
-  // if(activeImgIndex == 14){
-  //   deadColor = color(0);
-  // } else if(activeImgIndex == 6){
-  //   deadColor = color(0, 0, 255);
-  // } else{
-  //   deadColor = color(255);
-  // }
+  image(
+    handCursor,
+    mouseX,
+    mouseY,
+    handCursor.width * 2,
+    handCursor.height * 2
+  );
+  activeImg.attribute("src", imgSrc[activeImgIndex]);
 }
-
 
 function showInfo() {
   push();
@@ -338,12 +307,6 @@ function showInfo() {
   pop();
 }
 
-function mousePressed() {
-  if (mouseButton === CENTER) {
-    redrawGrid = !redrawGrid;
-  }
-}
-
 function keyPressed() {
   if (keyCode === "R".charCodeAt(0)) {
     prob = ALIVE_PROB;
@@ -377,23 +340,67 @@ function windowResized() {
   setup();
 }
 
+function mousePressed() {
+  if (mouseButton === CENTER) {
+    redrawGrid = !redrawGrid;
+  }
+
+  const [x, y] = getGridFromMouse();
+  if (x === null || y === null) {
+    return;
+  }
+
+  if (grid.grid[y][x] === 1) {
+    editMode = "remove";
+  } else {
+    editMode = "add";
+  }
+
+  toggleCell(x, y);
+}
+
+function toggleCell(x, y) {
+  if (editMode === "remove") {
+    grid.grid[y][x] = 0; //remove clicked img
+    activeImgIndex = grid.imgGrid[y][x]; //take on clicked img
+  } else if (editMode === "add") {
+    grid.grid[y][x] = 1; // place active Img
+    grid.imgGrid[y][x] = activeImgIndex; //display active img
+  }
+}
+
 function touchStarted() {
-  // Code to run.
-  touching = true
-  // console.log(mouseIsPressed)
+  const [x, y] = getGridFromMouse();
+  if (x === null || y === null) {
+    return;
+  }
+
+  if (grid.grid[y][x] === 1) {
+    editMode = "remove";
+  } else {
+    editMode = "add";
+  }
 }
 
-function touchEnded() {
-  // Code to run.
-  touching = false
-  // console.log(touching)
+function mouseReleased() {
+  editMode = null;
 }
 
-// function mouseClicked() {
-//   touching = true
+function mouseDragged() {
+  const [x, y] = getGridFromMouse();
 
-// }
+  toggleCell(x, y);
 
-// function mouseReleased() {
-//   touching = false
-// }
+  return false;
+}
+
+function getGridFromMouse() {
+  const gridX = floor(mouseX / grid.len);
+  const gridY = floor(mouseY / grid.len);
+  const xBound = 0 <= gridX && gridX < grid.cols;
+  const yBound = 0 <= gridY && gridY < grid.rows;
+  if (!xBound || !yBound) {
+    return [null, null];
+  }
+  return [gridX, gridY];
+}

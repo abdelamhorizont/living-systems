@@ -1,19 +1,18 @@
 @font-face {
   font-family: Cirruscumulus;
-  src: url('/assets/cirruscumulus.woff');
+  src: url("/assets/CirrusCumulus.woff");
 }
 
 html,
 body {
   margin: 0;
   padding: 0;
-  cursor: url('assets/hand.png'), auto;
+  cursor: url("assets/hand.png"), auto;
   font-size: 2vw;
   /* font-size: clamp(1vw, 2.5vw, 3vw); */
   /* font-family: Arial, Helvetica, sans-serif; */
   font-family: Cirruscumulus;
 }
-
 
 canvas {
   display: block;
@@ -21,16 +20,16 @@ canvas {
   top: 0rem;
 }
 
-img{
+img {
   object-fit: contain;
 }
 
-button{
+button {
   border: none;
-background: none;
+  background: none;
 }
 
-img.nav-icon{
+img.nav-icon {
   /* height:fit-content;
   max-height: max-content; */
   height: 100%;
@@ -57,7 +56,7 @@ img.nav-icon{
   justify-content: space-between;
 }
 
-.instructioncontainer{
+.instructioncontainer {
   background-color: whitesmoke;
   padding: 2rem 0rem;
   border-radius: 4rem;
@@ -69,7 +68,6 @@ img.nav-icon{
   max-height: 6vh;
   margin-top: 1rem;
   max-width: 60vw;
-
 }
 
 .instructions {
@@ -79,7 +77,6 @@ img.nav-icon{
   text-align: center;
   max-width: 50%;
 }
-
 
 .active-img {
   object-fit: contain;
@@ -163,9 +160,8 @@ h1 {
   text-align: center;
 }
 
-button{
+button {
   font-family: Arial, Helvetica, sans-serif;
-
 }
 
 .play-button {
@@ -183,13 +179,11 @@ button{
   border: none;
 }
 
-
 .buttons-left {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
-
 
 .slidecontainer {
   /* position: absolute; */
@@ -203,7 +197,6 @@ button{
 
 #framerate-container {
   right: 12vw;
-
 }
 
 .sliders {
@@ -241,7 +234,7 @@ button{
   -webkit-transition: .2s; */
 }
 
-input[type=range][orient=vertical] {
+input[type="range"][orient="vertical"] {
   -webkit-appearance: none;
   /* color: red;
   background: red; */
@@ -255,13 +248,13 @@ input[type=range][orient=vertical] {
   vertical-align: bottom;
 }
 
-input[type=range]::-webkit-slider-runnable-track {
+input[type="range"]::-webkit-slider-runnable-track {
   background: yellow;
   width: 10px;
   /* ...my custom edits...*/
 }
 
-input[type=range]::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
 
