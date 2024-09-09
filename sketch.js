@@ -1,6 +1,6 @@
 const DEFAULT_RES = 20;
 let res = DEFAULT_RES;
-let speed = 3;
+let speed = 20;
 const speedSteps = 2;
 
 // 'add' or 'remove' elements from grid when moving mouse
@@ -44,6 +44,7 @@ const imgSrc = [
   "assets/human.png",
 ];
 let activeImgIndex;
+let prevImgIndex;
 let activeImg;
 let imgIndex;
 
@@ -84,15 +85,15 @@ const instructions = [
 
 let instCount;
 let timer = 0;
-let p;
+let instructionsP;
 
-let button;
+let infoButton;
 let playButton;
 let infoVisible = false;
 let infoContainer;
 let reload;
 
-let slider;
+let zoomSlider;
 let sliderValue;
 let zoominButton;
 let zoomoutButton;
@@ -117,23 +118,25 @@ function preload() {
 function setup() {
   frameRate(60);
   createCanvas(windowWidth, windowHeight);
-  p = select(".instructions");
-  p.html(instructions[activeImgIndex]);
+  instructionsP = select(".instructions");
+  instructionsP.html(instructions[activeImgIndex]);
 
-  button = select(".info-button");
-  button.mouseClicked(() => {
+  infoButton = select("#info-button");
+  infoButton.mouseClicked(() => {
     infoVisible = !infoVisible;
+    infoButton.html(infoVisible ? "&times;" : "i");
+    infoContainer.style("transform", infoVisible ? "scale(1)" : "scale(0)");
   });
 
-  reload = select(".reload-button");
+  reload = select("#reload-button");
   reload.mouseClicked(() => {
     resetSketch();
   });
 
   infoContainer = select(".info-container");
 
-  playButton = select(".play-button");
-  playIcon = select(".play-icon");
+  playButton = select("#play-button");
+  playIcon = select("#play-icon");
 
   playButton.mouseClicked(() => {
     redrawGrid = !redrawGrid;
@@ -142,27 +145,27 @@ function setup() {
       : playIcon.attribute("src", "assets/play.png");
   });
 
-  slider = select("#zoom-slider");
+  zoomSlider = select("#zoom-slider");
   speedSlider = select("#speed-slider");
-  zoominButton = select("#zoomin-container");
-  zoomoutButton = select("#zoomout-container");
-  fasterButton = select("#faster-container");
-  slowerButton = select("#slower-container");
+  zoominButton = select("#zoomin-btn");
+  zoomoutButton = select("#zoomout-btn");
+  fasterButton = select("#faster-btn");
+  slowerButton = select("#slower-btn");
 
   zoominButton.mouseClicked(() => {
-    let sliderValue = slider.value();
+    let sliderValue = zoomSlider.value();
     sliderValue--;
-    slider.value(sliderValue);
-    res = slider.value();
+    zoomSlider.value(sliderValue);
+    res = zoomSlider.value();
     removeElements();
     resetSketch();
   });
 
   zoomoutButton.mouseClicked(() => {
-    let sliderValue = slider.value();
+    let sliderValue = zoomSlider.value();
     sliderValue++;
-    slider.value(sliderValue);
-    res = slider.value();
+    zoomSlider.value(sliderValue);
+    res = zoomSlider.value();
     removeElements();
     resetSketch();
   });
@@ -179,8 +182,8 @@ function setup() {
 
   speed = speedSlider.value();
 
-  slider.changed(() => {
-    res = slider.value();
+  zoomSlider.changed(() => {
+    res = zoomSlider.value();
     removeElements();
     resetSketch();
   });
@@ -189,7 +192,7 @@ function setup() {
 }
 
 function resetSketch() {
-  res = slider.value();
+  res = zoomSlider.value();
 
   let temp = height > width ? width : height;
   len = temp / res;
@@ -231,28 +234,7 @@ function draw() {
 
   if (redrawGrid && frameCount % speed === 0 && !infoVisible) {
     grid.update(activeImgIndex);
-  } else {
-    push();
-    textFont(CascadiaItalic);
-    textSize(FontSize);
-    textStyle(ITALIC);
-    stroke(255);
-    strokeWeight(5);
-    fill(0, 255, 0);
-    // text("PAUSED", 10, FontSize);
-    pop();
   }
-
-  //info
-  if (infoVisible) {
-    infoContainer.style("transform", "scale(1)");
-    button.html("&times;");
-  } else {
-    infoContainer.style("transform", "scale(0)");
-    button.html("i");
-  }
-
-  p.html(instructions[activeImgIndex]);
 
   //activeImgIndex display
   image(
@@ -262,47 +244,13 @@ function draw() {
     handCursor.width * 2,
     handCursor.height * 2
   );
-  activeImg.attribute("src", imgSrc[activeImgIndex]);
+
+  if (prevImgIndex !== activeImgIndex) {
+    prevImgIndex = activeImgIndex;
+    activeImg.attribute("src", imgSrc[activeImgIndex]);
+    instructionsP.html(instructions[activeImgIndex]);
+  }
 }
-
-// function showInfo() {
-//   push();
-//   let fontSize = FontSize / 1.5;
-//   let x = width / 2;
-//   let y = height / 2 - fontSize * 8;
-
-//   // rectMode(CENTER);
-//   // stroke(255);
-//   // strokeWeight(5);
-//   fill(0, 0, 255);
-//   rect(10, 10, fontSize * 25, fontSize * 18);
-
-//   // strokeWeight(3);
-//   // textFont(Cascadia);
-//   textSize(fontSize);
-//   // textAlign(CENTER);
-//   fill(255);
-
-//   textStyle(BOLD);
-//   text(`Conway's Game of Life by S.Y. Kim.`, 15, 80);
-
-//   // textStyle(NORMAL);
-//   // text(`Press 'R' to reset grid.`, x, y + fontSize * 3);
-//   // text(`Press 'T' to reset grid with no cells.`, x, y + fontSize * 4);
-//   // text(`Press 'N' to advance a single step.`, x, y + fontSize * 5);
-//   // text(`Press 'G' to toggle grid lines.`, x, y + fontSize * 6);
-
-//   // text(`Press '[[]' to decrease cell resolution.`, x, y + fontSize * 8);
-//   // text(`Press ']' to increase cell resolution.`, x, y + fontSize * 9);
-//   // text(`Press '\\' to reset cell resolution.`, x, y + fontSize * 10);
-
-//   // text(`Press Mouse Left to set cell to alive.`, x, y + fontSize * 12);
-//   // text(`Press Mouse Right to set cell to dead.`, x, y + fontSize * 13);
-//   // text(`Press Mouse Center or 'P' to pause/play.`, x, y + fontSize * 14);
-
-//   // text(`Hold 'H' to show help message box.`, x, y + fontSize * 16);
-//   pop();
-// }
 
 function keyPressed() {
   if (keyCode === "R".charCodeAt(0)) {

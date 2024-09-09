@@ -16,18 +16,16 @@
 
   <div class="top-nav">
     
-    <!-- <div class="buttons"> -->
-      <div class="reload-button-container">
-        <button class="reload-button">↻</button>
-      </div>
-      <div class="instructioncontainer">
-        <p class="instructions"></p>
-        <img src="" class="active-img" alt="">
-      </div>
-      <div class="info-button-container">
-        <button class="info-button">i</button>
-      </div>
-    <!-- </div> -->
+    <div class="reload-button-container">
+      <button class="round-btn" id="reload-button">↻</button>
+    </div>
+    <div class="instructioncontainer">
+      <p class="instructions"></p>
+      <img src="" class="active-img" alt="">
+    </div>
+    <div class="info-button-container">
+      <button class="round-btn" id="info-button">i</button>
+    </div>
 
     <div class="info-container">
       <p class="info">
@@ -53,21 +51,21 @@
   <div class="bottom-nav">
     <div class="buttons-left">
       <div class="button-container">
-        <button class="play-button"><img src="assets/pause.png" class="play-icon"></button>
+        <button id="play-button"><img src="assets/pause.png" class="" id="play-icon"></button>
       </div>
     </div>
 
     <div class="sliders">
       <div id="zoom-container" class="slidecontainer">
-        <button class="slider-info" id="zoomout-container"><img src="assets/zoomout.png" class="nav-icon" id="zoomout" alt=""></button>
+        <button class="round-btn" id="zoomout-btn"><img src="assets/zoomout.png" class="nav-icon" id="zoomout" alt=""></button>
         <input type="range" min="5" max="50" value="15" class="slider" id="zoom-slider">
-        <button class="slider-info" id="zoomin-container"><img src="assets/zoomin.png" class="nav-icon" alt=""></button>
+        <button class="round-btn" id="zoomin-btn"><img src="assets/zoomin.png" class="nav-icon" alt=""></button>
       </div>
 
       <div id="framerate-container" class="slidecontainer">
-        <button class="slider-info" id="slower-container"><img src="assets/slower.png" class="nav-icon" alt=""> </button>
-        <input type="range" min="2" max="30" value="10" step="2" class="slider" id="speed-slider">
-        <button class="slider-info" id="faster-container"><img src="assets/faster.png" class="nav-icon" alt=""> </button>
+        <button class="round-btn" id="slower-btn"><img src="assets/slower.png" class="nav-icon" alt=""> </button>
+        <input type="range" min="2" max="30" value="20" step="2" class="slider" id="speed-slider">
+        <button class="round-btn" id="faster-btn"><img src="assets/faster.png" class="nav-icon" alt=""> </button>
       </div>
     </div>
   </div>
