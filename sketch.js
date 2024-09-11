@@ -1,6 +1,12 @@
 const DEFAULT_RES = 20;
 let res = DEFAULT_RES;
-let framerate = 3;
+let speed = 20;
+const speedSteps = 2;
+
+// 'add' or 'remove' elements from grid when moving mouse
+// default 'null'
+let editMode = null;
+
 let FontSize;
 
 let len;
@@ -11,33 +17,34 @@ let aliveColor;
 let gridColor;
 
 let img = [];
-let imgSrc = [
-  'assets/virus.png',
-  'assets/fire.png',
-  'assets/earth.png',
-  'assets/frog.png',
-  'assets/car.png',
-  'assets/cursor.png',
-  'assets/drop.png',
-  'assets/error.png',
-  'assets/flower.png',
-  'assets/ant.png',
-  'assets/mushroom.png',
-  'assets/planet.png',
-  'assets/book.png',
-  'assets/tornado.png',
-  'assets/sun.png',
-  'assets/tree.png',
-  'assets/cloud.png',
-  'assets/butterfly.png',
-  'assets/house.png',
-  'assets/walle.png',
-  'assets/law.png',
-  'assets/crown.png',
-  'assets/euro.png',
-  'assets/human.png',
+const imgSrc = [
+  "assets/virus.png",
+  "assets/fire.png",
+  "assets/earth.png",
+  "assets/frog.png",
+  "assets/car.png",
+  "assets/cursor.png",
+  "assets/drop.png",
+  "assets/error.png",
+  "assets/flower.png",
+  "assets/ant.png",
+  "assets/mushroom.png",
+  "assets/planet.png",
+  "assets/book.png",
+  "assets/tornado.png",
+  "assets/sun.png",
+  "assets/tree.png",
+  "assets/cloud.png",
+  "assets/butterfly.png",
+  "assets/house.png",
+  "assets/walle.png",
+  "assets/law.png",
+  "assets/crown.png",
+  "assets/euro.png",
+  "assets/human.png",
 ];
 let activeImgIndex;
+let prevImgIndex;
 let activeImg;
 let imgIndex;
 
@@ -49,7 +56,7 @@ let redrawGrid = true;
 let showGrid = false;
 let showHelp = false;
 
-let instructions = [
+const instructions = [
   "Wer stört das Ökosystem?",
   "Welche politischen Systeme sind stabil?",
   "Wann versagen Finanzsysteme?",
@@ -74,19 +81,19 @@ let instructions = [
   "Wer entscheidet über das politische System?",
   "Was hält das Sonnensystem zusammen?",
   "Von welchen Systemen bist du ein Teil?",
-]
+];
 
 let instCount;
 let timer = 0;
-let p;
+let instructionsP;
 
-let button;
+let infoButton;
 let playButton;
 let infoVisible = false;
 let infoContainer;
-let reload
+let reload;
 
-let slider;
+let zoomSlider;
 let sliderValue;
 let zoominButton;
 let zoomoutButton;
@@ -94,99 +101,111 @@ let fasterButton;
 let slowerButton;
 
 let handCursor;
-
-let touching = false;
+// let Cascadia;
+let CascadiaItalic;
+let speedSlider;
 
 function preload() {
-  Cascadia = loadFont("assets/CascadiaCode.ttf");
+  // Cascadia = loadFont("assets/CascadiaCode.ttf");
   CascadiaItalic = loadFont("assets/CascadiaCodeItalic.ttf");
-  handCursor = loadImage("assets/hand.png");  
+  handCursor = loadImage("assets/hand.png");
 
-  // img.apply(null, Array(10)).map((i) => loadImage(imgSrc[i])
   for (let i = 0; i < imgSrc.length; i++) {
-    img[i] = loadImage(imgSrc[i]);    
+    img[i] = loadImage(imgSrc[i]);
   }
-
 }
 
-
 function setup() {
+  frameRate(60);
   createCanvas(windowWidth, windowHeight);
-  p = select('.instructions')
-  p.html(instructions[activeImgIndex])
 
-  //info-button
-  button = select('.info-button');
-  button.mouseClicked(() => { 
+  instructionsP = select(".instructions");
+  instructionsP.html(instructions[activeImgIndex]);
+
+  infoButton = select("#info-button");
+  infoContainer = select("#info-container");
+  infoBackdrop = select("#info-backdrop");
+
+  bottomNav = select("#bottom-nav");
+
+  infoButton.mouseClicked(() => {
     infoVisible = !infoVisible;
-    redrawGrid = !redrawGrid   
+    infoButton.html(infoVisible ? "&times;" : "i");
+    infoContainer.style("transform", infoVisible ? "scale(1)" : "scale(0)");
+    infoBackdrop.style("height", infoVisible ? "100vh" : "0");
   });
-  
-  reload = select(".reload-button")
-  reload.mouseClicked(() => { 
+
+  infoBackdrop.mouseClicked(closeInfo);
+
+  bottomNav.mouseClicked(() => {
+    if (infoVisible) {
+      closeInfo();
+    }
+  });
+
+  reload = select("#reload-button");
+  reload.mouseClicked(() => {
     resetSketch();
   });
 
-  infoContainer = select('.info-container')
-  
-  playButton = select('.play-icon')
-  playButton.mouseClicked(() => { 
-    redrawGrid = !redrawGrid  
-    redrawGrid ? playButton.attribute('src', 'assets/pause.png') : playButton.attribute('src', 'assets/play.png')
-    // redrawGrid ? playButton.html('⏸') : playButton.html('▶')
+  playButton = select("#play-button");
+  playIcon = select("#play-icon");
+
+  playButton.mouseClicked(() => {
+    redrawGrid = !redrawGrid;
+    redrawGrid
+      ? playIcon.attribute("src", "assets/pause.png")
+      : playIcon.attribute("src", "assets/play.png");
   });
 
-  slider = select('#zoom') 
-  framerateSlider = select('#framerate') 
-  zoominButton = select('#zoomin-container') 
-  zoomoutButton = select('#zoomout-container') 
-  fasterButton = select('#faster-container') 
-  slowerButton = select('#slower-container') 
+  zoomSlider = select("#zoom-slider");
+  speedSlider = select("#speed-slider");
+  zoominButton = select("#zoomin-btn");
+  zoomoutButton = select("#zoomout-btn");
+  fasterButton = select("#faster-btn");
+  slowerButton = select("#slower-btn");
 
-  zoominButton.mouseClicked(() => { 
-    let sliderValue = slider.value()
-    sliderValue--
-    slider.value(sliderValue);
-    res = slider.value();
+  zoominButton.mouseClicked(() => {
+    let sliderValue = zoomSlider.value();
+    sliderValue--;
+    zoomSlider.value(sliderValue);
+    res = zoomSlider.value();
     removeElements();
-    resetSketch()
-  })
+    resetSketch();
+  });
 
-  zoomoutButton.mouseClicked(() => { 
-    let sliderValue = slider.value()
-    sliderValue++
-    slider.value(sliderValue);
-    res = slider.value();
+  zoomoutButton.mouseClicked(() => {
+    let sliderValue = zoomSlider.value();
+    sliderValue++;
+    zoomSlider.value(sliderValue);
+    res = zoomSlider.value();
     removeElements();
-    resetSketch()
-  })
-  
-  fasterButton.mouseClicked(() => { 
-    let speedValue = framerateSlider.value()
-    speedValue++
-    framerateSlider.value(speedValue);
-  })
+    resetSketch();
+  });
 
-  slowerButton.mouseClicked(() => { 
-    let speedValue = framerateSlider.value()
-    speedValue--
-    framerateSlider.value(speedValue);
-  })
-  
-  frameRate(framerateSlider.value());
+  fasterButton.mouseClicked(() => {
+    let speedValue = speedSlider.value();
+    speedSlider.value(speedValue - speedSteps);
+  });
 
-  slider.changed(() => {
-    res = slider.value();
+  slowerButton.mouseClicked(() => {
+    let speedValue = speedSlider.value();
+    speedSlider.value(speedValue + speedSteps);
+  });
+
+  speed = speedSlider.value();
+
+  zoomSlider.changed(() => {
+    res = zoomSlider.value();
     removeElements();
-    resetSketch()
+    resetSketch();
   });
 
   resetSketch();
-
 }
 
 function resetSketch() {
-  res = slider.value();
+  res = zoomSlider.value();
 
   let temp = height > width ? width : height;
   len = temp / res;
@@ -195,8 +214,8 @@ function resetSketch() {
   cols = ceil(width / len);
 
   deadColor = color(255);
-  aliveColor = color(0,0);
-  activeImg = select('.active-img');
+  aliveColor = color(0, 0);
+  activeImg = select(".active-img");
 
   gridColor = color(0, 0, 255);
   FontSize = temp / DEFAULT_RES;
@@ -204,13 +223,12 @@ function resetSketch() {
   grid = new Grid(rows, cols, len, [deadColor, aliveColor], img);
   grid.genorate(prob);
   activeImgIndex = int(random(img.length));
-
 }
 
 function draw() {
   background(deadColor);
   // background(0,0,255);
-  frameRate(framerateSlider.value());
+  speed = speedSlider.value();
 
   if (showGrid) {
     push();
@@ -227,120 +245,23 @@ function draw() {
 
   grid.show();
 
-  if (redrawGrid) {
+  if (redrawGrid && frameCount % speed === 0 && !infoVisible) {
     grid.update(activeImgIndex);
-  } else {
-    push();
-    textFont(CascadiaItalic);
-    textSize(FontSize);
-    textStyle(ITALIC);
-    stroke(255);
-    strokeWeight(5);
-    fill(0, 255, 0);
-    // text("PAUSED", 10, FontSize);
-    pop();
   }
-
-  // User Interrupt.
-  if (mouseIsPressed || touching) {
-    let x = floor(mouseX / grid.len);
-    let y = floor(mouseY / grid.len);
-
-    let xBound = 0 <= x && x < grid.cols;
-    let yBound = 0 <= y && y < grid.rows;
-    if (!xBound || !yBound) {
-      return;
-    }
-
-    // if (mouseButton === LEFT) {
-      let clicked = true;
-
-      if(grid.grid[y][x] == 1){
-        grid.grid[y][x] = 0; //remove clicked img
-        activeImgIndex = grid.imgGrid[y][x] //take on clicked img
-      } else {
-        grid.grid[y][x] = 1; // place active Img
-        grid.imgGrid[y][x] = activeImgIndex; //display active img
-        grid.update(activeImgIndex, clicked);
-      }
-
-    // } else if (mouseButton === RIGHT) {
-    //   grid.grid[y][x] = 0;
-    // }
-  }
-
-  //info
-  if (infoVisible) {
-    // showInfo();
-    infoContainer.style('transform', 'scale(1)')
-    button.html('&times;')
-    // redrawGrid = false
-  } else {
-    infoContainer.style('transform', 'scale(0)')
-    button.html('i')
-    // redrawGrid = true
-
-  }
-
-
-  p.html(instructions[activeImgIndex])
 
   //activeImgIndex display
-  image(handCursor, mouseX, mouseY, handCursor.width*2, handCursor.height*2)
-  activeImg.attribute('src', imgSrc[activeImgIndex])
+  image(
+    handCursor,
+    mouseX,
+    mouseY,
+    handCursor.width * 2,
+    handCursor.height * 2
+  );
 
-  // if(activeImgIndex == 14){
-  //   deadColor = color(0);
-  // } else if(activeImgIndex == 6){
-  //   deadColor = color(0, 0, 255);
-  // } else{
-  //   deadColor = color(255);
-  // }
-}
-
-
-function showInfo() {
-  push();
-  let fontSize = FontSize / 1.5;
-  let x = width / 2;
-  let y = height / 2 - fontSize * 8;
-
-  // rectMode(CENTER);
-  // stroke(255);
-  // strokeWeight(5);
-  fill(0, 0, 255);
-  rect(10, 10, fontSize * 25, fontSize * 18);
-
-  // strokeWeight(3);
-  // textFont(Cascadia);
-  textSize(fontSize);
-  // textAlign(CENTER);
-  fill(255);
-
-  textStyle(BOLD);
-  text(`Conway's Game of Life by S.Y. Kim.`, 15, 80);
-
-  // textStyle(NORMAL);
-  // text(`Press 'R' to reset grid.`, x, y + fontSize * 3);
-  // text(`Press 'T' to reset grid with no cells.`, x, y + fontSize * 4);
-  // text(`Press 'N' to advance a single step.`, x, y + fontSize * 5);
-  // text(`Press 'G' to toggle grid lines.`, x, y + fontSize * 6);
-
-  // text(`Press '[[]' to decrease cell resolution.`, x, y + fontSize * 8);
-  // text(`Press ']' to increase cell resolution.`, x, y + fontSize * 9);
-  // text(`Press '\\' to reset cell resolution.`, x, y + fontSize * 10);
-
-  // text(`Press Mouse Left to set cell to alive.`, x, y + fontSize * 12);
-  // text(`Press Mouse Right to set cell to dead.`, x, y + fontSize * 13);
-  // text(`Press Mouse Center or 'P' to pause/play.`, x, y + fontSize * 14);
-
-  // text(`Hold 'H' to show help message box.`, x, y + fontSize * 16);
-  pop();
-}
-
-function mousePressed() {
-  if (mouseButton === CENTER) {
-    redrawGrid = !redrawGrid;
+  if (prevImgIndex !== activeImgIndex) {
+    prevImgIndex = activeImgIndex;
+    activeImg.attribute("src", imgSrc[activeImgIndex]);
+    instructionsP.html(instructions[activeImgIndex]);
   }
 }
 
@@ -377,23 +298,79 @@ function windowResized() {
   setup();
 }
 
+function mousePressed() {
+  if (mouseButton === CENTER) {
+    redrawGrid = !redrawGrid;
+  }
+
+  const [x, y] = getGridFromMouse();
+  if (x === null || y === null) {
+    return;
+  }
+
+  if (grid.grid[y][x] === 1) {
+    editMode = "remove";
+  } else {
+    editMode = "add";
+  }
+
+  toggleCell(x, y);
+}
+
+function toggleCell(x, y) {
+  if (editMode === "remove") {
+    grid.grid[y][x] = 0; //remove clicked img
+    activeImgIndex = grid.imgGrid[y][x]; //take on clicked img
+  } else if (editMode === "add") {
+    grid.grid[y][x] = 1; // place active Img
+    grid.imgGrid[y][x] = activeImgIndex; //display active img
+  }
+}
+
 function touchStarted() {
-  // Code to run.
-  touching = true
-  // console.log(mouseIsPressed)
+  const [x, y] = getGridFromMouse();
+  if (x === null || y === null) {
+    return;
+  }
+
+  if (grid.grid[y][x] === 1) {
+    editMode = "remove";
+  } else {
+    editMode = "add";
+  }
 }
 
-function touchEnded() {
-  // Code to run.
-  touching = false
-  // console.log(touching)
+function mouseReleased() {
+  editMode = null;
 }
 
-// function mouseClicked() {
-//   touching = true
+function mouseDragged(event) {
+  const [x, y] = getGridFromMouse();
+  if (x === null || y === null) {
+    return;
+  }
 
-// }
+  toggleCell(x, y);
 
-// function mouseReleased() {
-//   touching = false
-// }
+  if (event.target.tagName !== "INPUT") {
+    return false;
+  }
+}
+
+function getGridFromMouse() {
+  const gridX = floor(mouseX / grid.len);
+  const gridY = floor(mouseY / grid.len);
+  const xBound = 0 <= gridX && gridX < grid.cols;
+  const yBound = 0 <= gridY && gridY < grid.rows;
+  if (!xBound || !yBound) {
+    return [null, null];
+  }
+  return [gridX, gridY];
+}
+
+function closeInfo() {
+  infoVisible = false;
+  infoButton.html("i");
+  infoContainer.style("transform", "scale(0)");
+  infoBackdrop.style("height", "0");
+}
