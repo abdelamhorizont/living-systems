@@ -339,7 +339,7 @@ function mouseDragged(event) {
 
   toggleCell(x, y);
 
-  return false;
+  // return false;
 }
 
 function getGridFromMouse() {
