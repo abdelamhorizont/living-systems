@@ -1,75 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <title>Living Systems</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/addons/p5.sound.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <meta charset="utf-8" />
+  </head>
 
-<head>
-  <title>Living Systems</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/p5.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/addons/p5.sound.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="style.css" />
-  <meta charset="utf-8" />
-</head>
+  <body oncontextmenu="return false">
+    <script src="./lib/Tools.js"></script>
+    <script src="./src/Grid.js"></script>
+    <script src="sketch.js"></script>
 
-<body oncontextmenu="return false">
-  <script src="./lib/Tools.js"></script>
-  <script src="./src/Grid.js"></script>
-  <script src="sketch.js"></script>
+    <div class="top-nav">
+      <div class="reload-button-container">
+        <button class="round-btn" id="reload-button">↻</button>
+      </div>
+      <div class="instructioncontainer">
+        <p class="instructions"></p>
+        <img src="" class="active-img" alt="" />
+      </div>
+      <div class="info-button-container">
+        <button class="round-btn" id="info-button">i</button>
+      </div>
 
-  <div class="top-nav">
-    
-    <div class="reload-button-container">
-      <button class="round-btn" id="reload-button">↻</button>
-    </div>
-    <div class="instructioncontainer">
-      <p class="instructions"></p>
-      <img src="" class="active-img" alt="">
-    </div>
-    <div class="info-button-container">
-      <button class="round-btn" id="info-button">i</button>
-    </div>
+      <div class="info-container">
+        <h1>LIVING SYSTEMS</h1>
+        <p class="info">
+          „Aufgrund der Analogien zwischen LIFE und dem Aufstieg, dem Fall und
+          den Veränderungen in einer Gesellschaft lebender Organismen gehört es
+          zu einer wachsenden Klasse von so genannten 'Simulationsspielen'." —
+          Martin Gardner, 1970 <br />
+          <br />
 
-    <div class="info-container">
-      <p class="info">
-      <h1>LIVING SYSTEMS</h1>
-      „Aufgrund der Analogien zwischen LIFE und dem Aufstieg, dem Fall und den Veränderungen in einer Gesellschaft
-      lebender Organismen gehört es zu einer wachsenden Klasse von so genannten 'Simulationsspielen'." — Martin
-      Gardner, 1970 <br /> <br />
-      
-      1. Jedes System mit ein oder zwei Nachbarn verschwindet, wie bei einer Unterbevölkerung. <br />
-      <br />
-      2. Jedes System mit null, zwei oder drei Nachbarn lebt in der nächsten Generation weiter. <br /> <br />
-      3. Jedes System mit mehr als drei Nachbarn verschwindet, wie bei einer Überbevölkerung. <br /> <br />
-      4. Bei genau drei Nachbarn entsteht ein neues System, wie bei einer Reproduktion.
-      <br /> <br />
-      Entwickelt und Gestaltet von Abdelhamid Ameur, Feedback von Laura Wünsche und Stefan Stegmaier. <br /> <br /> Typeface: CirrusCumulus by Clara Sambot <br /> Installation: Stefan Avramescu
-      <br /> <br />
-      basierend auf Conway's Game of Life
-      
-      </p>
-    </div>
-  </div>
-
-  <div class="bottom-nav">
-    <div class="buttons-left">
-      <div class="button-container">
-        <button id="play-button"><img src="assets/pause.png" class="" id="play-icon"></button>
+          1. Jedes System mit null oder einem Nachbarn verschwindet, wie bei
+          einer Unterbevölkerung. <br />
+          <br />
+          2. Jedes System mit zwei oder drei Nachbarn lebt in der nächsten
+          Generation weiter. <br />
+          <br />
+          3. Jedes System mit mehr als drei Nachbarn verschwindet, wie bei einer
+          Überbevölkerung. <br />
+          <br />
+          4. Bei genau drei Nachbarn entsteht ein neues System, wie bei einer
+          Reproduktion.
+          <br />
+          <br />
+          Entwickelt und Gestaltet von Abdelhamid Ameur, Feedback von Laura
+          Wünsche und Stefan Stegmaier. <br />
+          <br />
+          Typeface: CirrusCumulus by Clara Sambot <br />
+          Installation: Stefan Avramescu
+          <br />
+          <br />
+          basierend auf Conway's Game of Life
+        </p>
       </div>
     </div>
 
-    <div class="sliders">
-      <div id="zoom-container" class="slidecontainer">
-        <button class="round-btn" id="zoomout-btn"><img src="assets/zoomout.png" class="nav-icon" id="zoomout" alt=""></button>
-        <input type="range" min="5" max="50" value="15" class="slider" id="zoom-slider">
-        <button class="round-btn" id="zoomin-btn"><img src="assets/zoomin.png" class="nav-icon" alt=""></button>
+    <div class="bottom-nav">
+      <div class="buttons-left">
+        <div class="button-container">
+          <button id="play-button">
+            <img src="assets/pause.png" class="" id="play-icon" />
+          </button>
+        </div>
       </div>
 
-      <div id="framerate-container" class="slidecontainer">
-        <button class="round-btn" id="slower-btn"><img src="assets/slower.png" class="nav-icon" alt=""> </button>
-        <input type="range" min="2" max="30" value="20" step="2" class="slider" id="speed-slider">
-        <button class="round-btn" id="faster-btn"><img src="assets/faster.png" class="nav-icon" alt=""> </button>
+      <div class="sliders">
+        <div id="zoom-container" class="slidecontainer">
+          <button class="round-btn" id="zoomout-btn">
+            <img
+              src="assets/zoomout.png"
+              class="nav-icon"
+              id="zoomout"
+              alt=""
+            />
+          </button>
+          <input
+            type="range"
+            min="5"
+            max="50"
+            value="15"
+            class="slider"
+            id="zoom-slider"
+          />
+          <button class="round-btn" id="zoomin-btn">
+            <img src="assets/zoomin.png" class="nav-icon" alt="" />
+          </button>
+        </div>
+
+        <div id="framerate-container" class="slidecontainer">
+          <button class="round-btn" id="slower-btn">
+            <img src="assets/slower.png" class="nav-icon" alt="" />
+          </button>
+          <input
+            type="range"
+            min="2"
+            max="30"
+            value="20"
+            step="2"
+            class="slider"
+            id="speed-slider"
+          />
+          <button class="round-btn" id="faster-btn">
+            <img src="assets/faster.png" class="nav-icon" alt="" />
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-
-</body>
-
+  </body>
 </html>
