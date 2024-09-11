@@ -118,22 +118,35 @@ function preload() {
 function setup() {
   frameRate(60);
   createCanvas(windowWidth, windowHeight);
+
   instructionsP = select(".instructions");
   instructionsP.html(instructions[activeImgIndex]);
 
   infoButton = select("#info-button");
+  infoContainer = select("#info-container");
+  infoBackdrop = select("#info-backdrop");
+
+  bottomNav = select("#bottom-nav");
+
   infoButton.mouseClicked(() => {
     infoVisible = !infoVisible;
     infoButton.html(infoVisible ? "&times;" : "i");
     infoContainer.style("transform", infoVisible ? "scale(1)" : "scale(0)");
+    infoBackdrop.style("height", infoVisible ? "100vh" : "0");
+  });
+
+  infoBackdrop.mouseClicked(closeInfo);
+
+  bottomNav.mouseClicked(() => {
+    if (infoVisible) {
+      closeInfo();
+    }
   });
 
   reload = select("#reload-button");
   reload.mouseClicked(() => {
     resetSketch();
   });
-
-  infoContainer = select(".info-container");
 
   playButton = select("#play-button");
   playIcon = select("#play-icon");
@@ -339,7 +352,9 @@ function mouseDragged(event) {
 
   toggleCell(x, y);
 
-  // return false;
+  if (event.target.tagName !== "INPUT") {
+    return false;
+  }
 }
 
 function getGridFromMouse() {
@@ -351,4 +366,11 @@ function getGridFromMouse() {
     return [null, null];
   }
   return [gridX, gridY];
+}
+
+function closeInfo() {
+  infoVisible = false;
+  infoButton.html("i");
+  infoContainer.style("transform", "scale(0)");
+  infoBackdrop.style("height", "0");
 }

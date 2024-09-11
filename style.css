@@ -40,7 +40,7 @@ img.nav-icon {
   justify-content: space-between;
 }
 
-.bottom-nav {
+#bottom-nav {
   position: absolute;
   z-index: 10;
   bottom: 0rem;
@@ -144,7 +144,16 @@ button img {
   font-size: 4rem;
 }
 
-.info-container {
+#info-backdrop {
+  position: absolute;
+  margin: -1rem;
+  padding: 0;
+  z-index: 1;
+  width: 100vw;
+  height: 0;
+}
+
+#info-container {
   position: absolute;
   z-index: 1;
   width: 80vw;

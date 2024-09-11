@@ -12,7 +12,6 @@
     <script src="./lib/Tools.js"></script>
     <script src="./src/Grid.js"></script>
     <script src="sketch.js"></script>
-
     <div class="top-nav">
       <div class="reload-button-container">
         <button class="round-btn" id="reload-button">↻</button>
@@ -25,7 +24,9 @@
         <button class="round-btn" id="info-button">i</button>
       </div>
 
-      <div class="info-container">
+      <div id="info-backdrop"></div>
+
+      <div id="info-container">
         <h1>LIVING SYSTEMS</h1>
         <p class="info">
           „Aufgrund der Analogien zwischen LIFE und dem Aufstieg, dem Fall und
@@ -59,7 +60,7 @@
       </div>
     </div>
 
-    <div class="bottom-nav">
+    <div id="bottom-nav">
       <div class="buttons-left">
         <div class="button-container">
           <button id="play-button">
