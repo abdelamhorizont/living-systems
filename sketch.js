@@ -237,13 +237,13 @@ function draw() {
   }
 
   //activeImgIndex display
-  image(
-    handCursor,
-    mouseX,
-    mouseY,
-    handCursor.width * 2,
-    handCursor.height * 2
-  );
+  // image(
+  //   handCursor,
+  //   mouseX,
+  //   mouseY,
+  //   handCursor.width * 2,
+  //   handCursor.height * 2
+  // );
 
   if (prevImgIndex !== activeImgIndex) {
     prevImgIndex = activeImgIndex;
