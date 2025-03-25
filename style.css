@@ -8,7 +8,7 @@ body {
   margin: 0;
   padding: 0;
   cursor: url("assets/hand.png"), auto;
-  font-size: 0.75vw;
+  /* font-size: 0.75vw; */
   /* font-size: clamp(1vw, 2.5vw, 3vw); */
   /* font-family: Arial, Helvetica, sans-serif; */
   font-family: Cirruscumulus;
@@ -60,18 +60,17 @@ img.nav-icon {
 
   justify-content: center;
   align-items: center;
-  max-height: 8vh;
+  max-height: 10vh;
   margin-top: 1rem;
-  max-width: 50vw;
+  /* max-width: 50vw; */
   transition: all 0.5s ease;
 }
 
 .instructions {
   color: blue;
   font-family: Cirruscumulus;
-  font-size: 2vw;
+  /* font-size: 2vw; */
   text-align: center;
-  max-width: 50%;
 }
 
 .active-img {
@@ -278,3 +277,37 @@ input[type="range"]::-webkit-slider-thumb {
   height: 4rem;
 }
 
+@media screen and (min-width: 720px) {
+  html,
+  body {
+    font-size: 0.75vw;
+  }
+
+  .instructions {
+    font-size: 3rem;
+    max-width: 50%;
+
+  }
+
+  .instructioncontainer {
+    max-width: 50vw;
+  }
+  
+}
+
+@media screen and (max-width: 720px) {
+  html,
+  body {
+    font-size: 2vw;
+  }
+  
+  .instructions {
+    font-size: 2.5rem;
+    max-width: 70%;
+
+  }
+
+  .instructioncontainer {
+    max-width: 70vw;
+  }
+}
